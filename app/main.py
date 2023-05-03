@@ -4,7 +4,7 @@ from controllers.subject_controller import subject_controller
 from config import db
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:example@db/example'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:admin@db/college'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.register_blueprint(student_controller)
 app.register_blueprint(subject_controller)
