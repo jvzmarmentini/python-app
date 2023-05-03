@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
-from ..config import Base
+from config import Base
 
 class Student(Base):
     __tablename__ = "students"
