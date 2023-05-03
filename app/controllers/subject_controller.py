@@ -1,54 +1,35 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-
-from config import SessionLocal
+from flask import Blueprint, jsonify, request
+from config import db
+from models.student import Student
 from models.subject import Subject
 
-router = APIRouter()
+subject_controller = Blueprint('subject_controller', __name__)
 
-def get_db():
-    try:
-        db = SessionLocal()
-        yield db
-    finally:
-        db.close()
+@subject_controller.route('/students/<int:student_id>/subjects', methods=['GET'])
+def get_subjects(student_id):
+    student = Student.query.get(student_id)
+    subjects = student.subjects
+    return jsonify([{'id': s.id, 'name': s.name} for s in subjects])
 
-@router.post("/students/{student_id}/subjects/")
-def create_subject_for_student(student_id: int, subject: SubjectCreate, db: Session = Depends(get_db)):
-    db_subject = Subject(name=subject.name, student_id=student_id)
-    db.add(db_subject)
-    db.commit()
-    db.refresh(db_subject)
-    return db_subject
+@subject_controller.route('/students/<int:student_id>/subjects', methods=['POST'])
+def create_subject(student_id):
+    data = request.get_json()
+    subject = Subject(name=data['name'], student_id=student_id)
+    db.session.add(subject)
+    db.session.commit()
+    return jsonify({'id': subject.id, 'name': subject.name})
 
-@router.get("/students/{student_id}/subjects/")
-def read_subjects_for_student(student_id: int, db: Session = Depends(get_db)):
-    db_subjects = db.query(Subject).filter(Subject.student_id == student_id).all()
-    return db_subjects
+@subject_controller.route('/students/<int:student_id>/subjects/<int:id>', methods=['PUT'])
+def update_subject(student_id, id):
+    data = request.get_json()
+    subject = Subject.query.get(id)
+    subject.name = data['name']
+    db.session.commit()
+    return jsonify({'id': subject.id, 'name': subject.name})
 
-@router.get("/subjects/{subject_id}")
-def read_subject(subject_id: int, db: Session = Depends(get_db)):
-    db_subject = db.query(Subject).filter(Subject.id == subject_id).first()
-    if not db_subject:
-        raise HTTPException(status_code=404, detail="Subject not found")
-    return db_subject
-
-@router.put("/subjects/{subject_id}")
-def update_subject(subject_id: int, subject: SubjectUpdate, db: Session = Depends(get_db)):
-    db_subject = db.query(Subject).filter(Subject.id == subject_id).first()
-    if not db_subject:
-        raise HTTPException(status_code=404, detail="Subject not found")
-    for var, value in vars(subject).items():
-        setattr(db_subject, var, value) if value else None
-    db.commit()
-    db.refresh(db_subject)
-    return db_subject
-
-@router.delete("/subjects/{subject_id}")
-def delete_subject(subject_id: int, db: Session = Depends(get_db)):
-    db_subject = db.query(Subject).filter(Subject.id == subject_id).first()
-    if not db_subject:
-        raise HTTPException(status_code=404, detail="Subject not found")
-    db.delete(db_subject)
-    db.commit()
-    return {"message": "Subject deleted"}
+@subject_controller.route('/students/<int:student_id>/subjects/<int:id>', methods=['DELETE'])
+def delete_subject(student_id, id):
+    subject = Subject.query.get(id)
+    db.session.delete(subject)
+    db.session.commit()
+    return jsonify({'message': 'Subject deleted'})

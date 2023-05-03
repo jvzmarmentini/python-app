@@ -1,12 +1,9 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
+from config import db
 
-from config import Base
+class Student(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    subjects = db.relationship('Subject', backref='student', lazy=True)
 
-class Student(Base):
-    __tablename__ = "students"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
-    age = Column(Integer)
-    subjects = relationship("Subject", back_populates="student")
+    def __repr__(self):
+        return f"Student(name='{self.name}')"

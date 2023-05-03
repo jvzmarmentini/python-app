@@ -1,12 +1,9 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
+from config import db
 
-from config import Base
+class Subject(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
 
-class Subject(Base):
-    __tablename__ = "subjects"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
-    student_id = Column(Integer, ForeignKey("students.id"))
-    student = relationship("Student", back_populates="subjects")
+    def __repr__(self):
+        return f"Subject(name='{self.name}')"

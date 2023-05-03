@@ -1,49 +1,33 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-
-from config import SessionLocal
+from flask import Blueprint, jsonify, request
+from config import db
 from models.student import Student
 
-router = APIRouter()
+student_controller = Blueprint('student_controller', __name__)
 
-def get_db():
-    try:
-        db = SessionLocal()
-        yield db
-    finally:
-        db.close()
+@student_controller.route('/students', methods=['GET'])
+def get_students():
+    students = Student.query.all()
+    return jsonify([{'id': s.id, 'name': s.name} for s in students])
 
-@router.post("/students/")
-def create_student(student: StudentCreate, db: Session = Depends(get_db)):
-    db_student = Student(name=student.name, age=student.age)
-    db.add(db_student)
-    db.commit()
-    db.refresh(db_student)
-    return db_student
+@student_controller.route('/students', methods=['POST'])
+def create_student():
+    data = request.get_json()
+    student = Student(name=data['name'])
+    db.session.add(student)
+    db.session.commit()
+    return jsonify({'id': student.id, 'name': student.name})
 
-@router.get("/students/{student_id}")
-def read_student(student_id: int, db: Session = Depends(get_db)):
-    db_student = db.query(Student).filter(Student.id == student_id).first()
-    if not db_student:
-        raise HTTPException(status_code=404, detail="Student not found")
-    return db_student
+@student_controller.route('/students/<int:id>', methods=['PUT'])
+def update_student(id):
+    data = request.get_json()
+    student = Student.query.get(id)
+    student.name = data['name']
+    db.session.commit()
+    return jsonify({'id': student.id, 'name': student.name})
 
-@router.put("/students/{student_id}")
-def update_student(student_id: int, student: StudentUpdate, db: Session = Depends(get_db)):
-    db_student = db.query(Student).filter(Student.id == student_id).first()
-    if not db_student:
-        raise HTTPException(status_code=404, detail="Student not found")
-    for var, value in vars(student).items():
-        setattr(db_student, var, value) if value else None
-    db.commit()
-    db.refresh(db_student)
-    return db_student
-
-@router.delete("/students/{student_id}")
-def delete_student(student_id: int, db: Session = Depends(get_db)):
-    db_student = db.query(Student).filter(Student.id == student_id).first()
-    if not db_student:
-        raise HTTPException(status_code=404, detail="Student not found")
-    db.delete(db_student)
-    db.commit()
-    return {"message": "Student deleted"}
+@student_controller.route('/students/<int:id>', methods=['DELETE'])
+def delete_student(id):
+    student = Student.query.get(id)
+    db.session.delete(student)
+    db.session.commit()
+    return jsonify({'message': 'Student deleted'})
