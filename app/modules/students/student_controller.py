@@ -1,14 +1,20 @@
 from flask import Blueprint, jsonify, request
 from config import db
-from app.modules.students.student import Student
+from modules.students.student import Student
 
 student_controller = Blueprint('student_controller', __name__)
 
 @student_controller.route('/students', methods=['GET'])
 def get_students():
-    students = Student.query.all()
-    return jsonify([{'id': s.id, 'name': s.name, 'document': s.document, 'address': s.address} for s in students])
+    name_query = request.args.get('name')
 
+    if name_query:
+        students = Student.query.filter(Student.name.ilike(f'%{name_query}%')).all()
+    else:
+        students = Student.query.all()
+    
+    return jsonify([{'id': s.id, 'name': s.name, 'document': s.document, 'address': s.address} for s in students])
+  
 @student_controller.route('/students/<int:id>', methods=['GET'])
 def get_student(id):
     if id:

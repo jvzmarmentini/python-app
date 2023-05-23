@@ -12,7 +12,7 @@ cadastrar o estudante (evitando duplicações) cria-se um número de
 matrícula para o estudante. 
 
 - [x] Consulta um estudante pelo número de matrícula;
-- [ ] Consulta um estudante por um pedaço de seu nome. Se houver mais
+- [x] Consulta um estudante por um pedaço de seu nome. Se houver mais
 de um "match", retorna uma lista;
 
 - [x] Consulta a lista de todos os estudantes;
