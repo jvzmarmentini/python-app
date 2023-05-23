@@ -1,6 +1,7 @@
 from flask import Flask
 from modules.students.student_controller import student_controller
 from modules.subjects.subject_controller import subject_controller
+from modules.enrollments.enrollment_controller import enrollment_controller
 from config import db
 
 app = Flask(__name__)
@@ -8,6 +9,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:admin@db/college'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.register_blueprint(student_controller)
 app.register_blueprint(subject_controller)
+app.register_blueprint(enrollment_controller)
 
 db.init_app(app)
 with app.app_context():

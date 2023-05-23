@@ -23,6 +23,15 @@ da disciplina (código numérico). Lembre-se que uma mesma
 disciplina (mesmo código e nome) pode ocorrer mais de uma vez
 (turmas diferentes);
 
+```
+POST /enrollments
+{
+    "subjectId": "",
+    "classId": "",
+    "studentId": ""
+}
+```
+
 - [ ] Matricular estudante na disciplina: informa número de matrúcula do 
 estudante, código e turma da disciplina.
 
