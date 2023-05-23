@@ -1,5 +1,4 @@
 aiofiles
-alembic
 blinker
 click
 Flask
