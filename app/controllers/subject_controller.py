@@ -12,20 +12,43 @@ def get_subjects(student_id):
     return jsonify([{'id': s.id, 'name': s.name} for s in subjects])
 
 @subject_controller.route('/students/<int:student_id>/subjects', methods=['POST'])
-def create_subject(student_id):
+def create_subject():
     data = request.get_json()
-    subject = Subject(name=data['name'], student_id=student_id)
+    class_num = data.get('class_num')
+    id = data.get('id')
+    name = data.get('name')
+    schedule = data.get('schedule')
+
+    if not class_num or not id or not name or not schedule:
+        return jsonify({'error': 'Missing data. Please provide Class number, Id, Name and Schedule.'}), 400
+
+    subject = Subject(class_num=class_num, id=id, name=name, schedule=schedule)
+
     db.session.add(subject)
     db.session.commit()
-    return jsonify({'id': subject.id, 'name': subject.name})
+
+    return jsonify({'class_num': class_num, 'id': subject.id, 'name': subject.name, 'schedule': schedule}), 201
 
 @subject_controller.route('/students/<int:student_id>/subjects/<int:id>', methods=['PUT'])
 def update_subject(student_id, id):
     data = request.get_json()
+    name = data.get('name')
+    schedule = data.get('schedule')
+
+    if not name or not schedule:
+        return jsonify({'error': 'Missing data. Please provide name and schedule.'}), 400
+
     subject = Subject.query.get(id)
-    subject.name = data['name']
+
+    if not subject:
+        return jsonify({'error': 'Subject not found'}), 404
+
+    subject.name = name
+    subject.schedule = schedule
+
     db.session.commit()
-    return jsonify({'id': subject.id, 'name': subject.name})
+
+    return jsonify({'id': subject.id, 'name': subject.name, 'schedule': subject.schedule})
 
 @subject_controller.route('/students/<int:student_id>/subjects/<int:id>', methods=['DELETE'])
 def delete_subject(student_id, id):
