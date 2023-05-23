@@ -19,3 +19,15 @@ def enroll_student_in_class():
     enrollment_service.enroll_student_in_class(student_id, subject_num, class_num)
 
     return '', 201
+
+@enrollment_controller.route('/enrollments', methods=['GET'])
+def list_enrollments():
+    student_id = request.args.get('studentId')
+    student_id = request.args.get('studentId')
+
+    if not subject_num or not class_num or not student_id:
+        return jsonify({'error': 'Missing data. Please provide subjectNum, classNum, studentId.'}), 400
+
+    enrollment_service.enroll_student_in_class(student_id, subject_num, class_num)
+
+    return '', 201

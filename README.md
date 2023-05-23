@@ -32,7 +32,7 @@ POST /enrollments
 }
 ```
 
-- [ ] Matricular estudante na disciplina: informa número de matrúcula do 
+- [x] Matricular estudante na disciplina: informa número de matrúcula do 
 estudante, código e turma da disciplina.
 
 - [ ] Consultar as disciplinas/turmas em que um estudante está 
