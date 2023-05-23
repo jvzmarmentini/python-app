@@ -20,7 +20,6 @@ class EnrollmentService:
         if student is None:
             raise f'No student with id={student_id}'
 
-        
         enrollment = Enrollment(subject_id=subject.id, student_id=student_id)
 
         db.session.add(enrollment)
