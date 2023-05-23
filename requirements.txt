@@ -21,3 +21,4 @@ toml
 typing_extensions
 Werkzeug
 wsproto
+flask_login

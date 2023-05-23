@@ -23,11 +23,22 @@ def enroll_student_in_class():
 @enrollment_controller.route('/enrollments', methods=['GET'])
 def list_enrollments():
     student_id = request.args.get('studentId')
-    student_id = request.args.get('studentId')
+    subject_num = request.args.get('subjectNum')
+    class_num = request.args.get('class_num')
 
-    if not subject_num or not class_num or not student_id:
-        return jsonify({'error': 'Missing data. Please provide subjectNum, classNum, studentId.'}), 400
+    enrollments = enrollment_service.list_enrollments()
+    
+    if student_id:
+        enrollments = [x for x in enrollments if x.student_id == student_id]
 
-    enrollment_service.enroll_student_in_class(student_id, subject_num, class_num)
+    if student_id:
+        enrollments = [x for x in enrollments if x.subject_num == subject_num]
 
-    return '', 201
+    if student_id:
+        enrollments = [x for x in enrollments if x.class_num == class_num]
+
+    enrollments = [{
+        'id': ''
+    }]
+
+    return jsonify({'result': "aaaa" }), 201

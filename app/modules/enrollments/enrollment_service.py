@@ -24,3 +24,6 @@ class EnrollmentService:
 
         db.session.add(enrollment)
         db.session.commit()
+
+    def list_enrollments(self):
+        return Enrollment.query.all()

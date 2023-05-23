@@ -1,17 +1,23 @@
+from modules.enrollments.enrollment import Enrollment
 from config import db
 from modules.students.student import Student
 from modules.subjects.subject import Subject
+# from modules.auth.user import User
 
 def populate_database():
+    # admin = 
+
     # Create subjects
-    math = Subject(name='Math', schedule='A', class_num=1, subject_num=1)
-    science = Subject(name='Science', schedule='B', class_num=2, subject_num=2)
-    history = Subject(name='History', schedule='C', class_num=3, subject_num=3)
+    math = Subject(id=1, name='Math', schedule='A', class_num=1, subject_num=1)
+    science = Subject(id=2, name='Science', schedule='B', class_num=2, subject_num=2)
+    history = Subject(id=3, name='History', schedule='C', class_num=3, subject_num=3)
 
     # Create students
-    john = Student(name='John Doe', document=123456, address='123 Street')
-    jane = Student(name='Jane Smith', document=789012, address='456 Avenue')
-    mike = Student(name='Mike Johnson', document=345678, address='789 Road')
+    john = Student(id=1, name='John Doe', document=123456, address='123 Street')
+    jane = Student(id=2, name='Jane Smith', document=789012, address='456 Avenue')
+    mike = Student(id=3, name='Mike Johnson', document=345678, address='789 Road')
+
+    # john_in_math = Enrollment(subject_id=1, student_id=1)
 
     # Add subjects and students to the session
     db.session.add_all([math, science, history, john, jane, mike])
