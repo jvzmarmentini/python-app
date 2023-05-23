@@ -10,6 +10,9 @@ in this project, we rely on two frameworks: Quart and SQLAlchemy
 - [ ] mover CRUD de student para StudentRepository
 - [ ] mover CRUD de subject para SubjectRepository
 - [ ] mover CRUD de user para UserRepository (tem que criar, modulo auth)
+- [ ] esperar container do banco inicializar antes de rodar o server
+- [ ] documentar todas nossas rotas e como funcina o processo de autenticacao
+- [ ] talvez criar um AuthService no modulo common, que por sua vez chama o auth.AuthService, para deixar bem desacoplado (microservicos vao mudar a implementacao do common.AuthService para fazer chamada http para o servico de autenticacao)
 
 ## Functionalities
 
