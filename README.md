@@ -5,6 +5,12 @@ we like python and docker
 
 in this project, we rely on two frameworks: Quart and SQLAlchemy
 
+## TODO
+
+- [ ] mover CRUD de student para StudentRepository
+- [ ] mover CRUD de subject para SubjectRepository
+- [ ] mover CRUD de user para UserRepository (tem que criar, modulo auth)
+
 ## Functionalities
 
 - [x] Registra o estudante: nome, número do documento, endereço. Ao 
@@ -42,4 +48,4 @@ matriculado;
 
 - [x] Registra usuário do sistema, com seu email, nome e senha;
 
-- [ ] Efetua login e logout. Obs: você pode implementar uma funcionalidade simples, com controles codificados por você, ou necessário utilizar as funções do framework de autenticação/autorização.
+- [x] Efetua login e logout. Obs: você pode implementar uma funcionalidade simples, com controles codificados por você, ou necessário utilizar as funções do framework de autenticação/autorização.
