@@ -1,6 +1,6 @@
 from flask import Flask
-from controllers.student_controller import student_controller
-from controllers.subject_controller import subject_controller
+from app.modules.students.student_controller import student_controller
+from app.modules.subjects.subject_controller import subject_controller
 from config import db
 
 app = Flask(__name__)
