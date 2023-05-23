@@ -20,7 +20,7 @@ class EnrollmentService:
         if student is None:
             raise Exception(f'No student with id={student_id}')
 
-        enrollment = Enrollment(subject_id=subject.id, student_id=student_id)
+        enrollment = Enrollment(subject_num=subject_num, class_num=class_num, student_id=student_id)
 
         db.session.add(enrollment)
         db.session.commit()

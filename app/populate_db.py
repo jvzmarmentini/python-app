@@ -17,10 +17,10 @@ def populate_database():
     jane = Student(id=2, name='Jane Smith', document=789012, address='456 Avenue')
     mike = Student(id=3, name='Mike Johnson', document=345678, address='789 Road')
 
-    # john_in_math = Enrollment(subject_id=1, student_id=1)
+    john_in_math = Enrollment(student_id=1, subject_num=1, class_num=1)
 
     # Add subjects and students to the session
-    db.session.add_all([math, science, history, john, jane, mike])
+    db.session.add_all([math, science, history, john, jane, mike, john_in_math])
 
     # Commit the session to persist the changes
     db.session.commit()

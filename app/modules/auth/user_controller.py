@@ -1,28 +1,43 @@
-from flask import Blueprint, redirect, request, url_for
-from flask_login import login_user, logout_user
+from flask import Blueprint, jsonify, redirect, request, url_for
 from modules.auth.user import User
+from modules.auth.auth_service import AuthService
+from config import db
+from modules.common.login_required_decorator import login_required
 
 user_controller = Blueprint('user_controller', __name__)
+auth_service = AuthService()
 
-@user_controller.route('/login', methods=['GET', 'POST'])
+@user_controller.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+    name = data.get('name')
+
+    if User.query.filter_by(email=email).first() is not None:
+        return "Email already taken"
+
+    user = User(email=email, password=password, name=name)
+
+    db.session.add(user)
+    db.session.commit()
+
+    return '', 201
+
+@user_controller.route('/login', methods=['POST'])
 def login():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
 
-        # Validate the username and password
-        user = User.query.filter_by(username=username).first()
+    session_token = auth_service.login(email, password)
 
-        if user and user.password == password:
-            # Login the user
-            login_user(user)
-            print("success")
-            return redirect('/students')
-
-        return 'Invalid username or password.'
-    return 'welcome to login'
+    if session_token is None:
+        return 'Invalid email or password.', 401
+    
+    return jsonify({ 'sessionToken': session_token }), 201
 
 @user_controller.route('/logout')
+@login_required
 def logout():
-    logout_user()
-    return redirect(url_for('login'))
+    auth_service.logout(request.headers.get('session-token'))

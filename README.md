@@ -35,11 +35,11 @@ POST /enrollments
 - [x] Matricular estudante na disciplina: informa número de matrúcula do 
 estudante, código e turma da disciplina.
 
-- [ ] Consultar as disciplinas/turmas em que um estudante está 
+- [x] Consultar as disciplinas/turmas em que um estudante está 
 matriculado;
 
-- [ ] Consultar os estudantes matriculados em uma disciplina/turma
+- [x] Consultar os estudantes matriculados em uma disciplina/turma
 
-- [ ] Registra usuário do sistema, com seu email, nome e senha;
+- [x] Registra usuário do sistema, com seu email, nome e senha;
 
 - [ ] Efetua login e logout. Obs: você pode implementar uma funcionalidade simples, com controles codificados por você, ou necessário utilizar as funções do framework de autenticação/autorização.

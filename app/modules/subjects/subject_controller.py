@@ -2,16 +2,19 @@ from flask import Blueprint, jsonify, request
 from config import db
 from modules.students.student import Student
 from modules.subjects.subject import Subject
+from modules.common.login_required_decorator import login_required
 
 subject_controller = Blueprint('subject_controller', __name__)
 
 @subject_controller.route('/students/<int:student_id>/subjects', methods=['GET'])
+@login_required
 def get_subjects(student_id):
     student = Student.query.get(student_id)
     subjects = student.subjects
     return jsonify([{'id': s.id, 'name': s.name} for s in subjects])
 
 @subject_controller.route('/students/<int:student_id>/subjects', methods=['POST'])
+@login_required
 def create_subject():
     data = request.get_json()
     class_num = data.get('class_num')
@@ -30,6 +33,7 @@ def create_subject():
     return jsonify({'class_num': class_num, 'id': subject.id, 'name': subject.name, 'schedule': schedule}), 201
 
 @subject_controller.route('/students/<int:student_id>/subjects/<int:id>', methods=['PUT'])
+@login_required
 def update_subject(student_id, id):
     data = request.get_json()
     name = data.get('name')
@@ -51,6 +55,7 @@ def update_subject(student_id, id):
     return jsonify({'id': subject.id, 'name': subject.name, 'schedule': subject.schedule})
 
 @subject_controller.route('/students/<int:student_id>/subjects/<int:id>', methods=['DELETE'])
+@login_required
 def delete_subject(student_id, id):
     subject = Subject.query.get(id)
     db.session.delete(subject)
