@@ -41,29 +41,17 @@ def upgrade():
         sa.Column('id', sa.Integer, unique=True, nullable=False),
         sa.Column('name', sa.String(50), nullable=False),
         sa.Column('schedule', sa.String(10), nullable=False),
-        sa.UniqueConstraint('id')
     )
 
-    op.create_table(
-        'student',
-        sa.Column('id', sa.Integer, primary_key=True),
-        sa.Column('name', sa.String(50), nullable=False),
-        sa.Column('document', sa.Integer, nullable=False),
-        sa.Column('address', sa.String(50), nullable=False),
-        sa.Column('subject_id', sa.Integer, sa.ForeignKey('subject.id')),
-        sa.UniqueConstraint('id')
-    )
-    
     # Populate the subject table
-    op.bulk_insert('subject', [
-        {'class_num': 1, 'id': 1, 'name': 'Math', 'schedule': 'MWF'},
-        {'class_num': 2, 'id': 2, 'name': 'Science', 'schedule': 'TTh'},
-        # Add more subjects here
-    ])
+    op.bulk_insert(
+        'subject',
+        [
+            {'class_num': 1, 'id': 1, 'name': 'Math', 'schedule': 'MWF'},
+            {'class_num': 2, 'id': 2, 'name': 'Science', 'schedule': 'TTh'},
+            # Add more subjects here
+        ]
+    )
 
-    # Populate the student table
-    op.bulk_insert('student', [
-        {'id': 1, 'name': 'John Doe', 'document': 123456, 'address': '123 Main St', 'subject_id': 1},
-        {'id': 2, 'name': 'Jane Smith', 'document': 654321, 'address': '456 Elm St', 'subject_id': 2},
-        # Add more students here
-    ])
+def downgrade():
+    op.drop_table('subject')

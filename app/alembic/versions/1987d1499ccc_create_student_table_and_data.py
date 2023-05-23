@@ -20,12 +20,10 @@ def upgrade():
     # Create the table
     op.create_table(
         'student',
-        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('id', sa.Integer(), primary_key=True),
         sa.Column('name', sa.String(length=50), nullable=False),
-        sa.Column('document', sa.Integer(), nullable=False),
+        sa.Column('document', sa.Integer(), unique=True, nullable=False),
         sa.Column('address', sa.String(length=50), nullable=False),
-        sa.PrimaryKeyConstraint('id'),
-        sa.UniqueConstraint('document')
     )
 
     # Insert data into the table

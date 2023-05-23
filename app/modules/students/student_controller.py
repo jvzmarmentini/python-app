@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from config import db
-from app.modules.students.student import Student
+from modules.students.student import Student
 
 student_controller = Blueprint('student_controller', __name__)
 
