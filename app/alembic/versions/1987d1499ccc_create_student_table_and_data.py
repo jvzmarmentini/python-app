@@ -24,7 +24,6 @@ def upgrade():
         sa.Column('name', sa.String(length=50), nullable=False),
         sa.Column('document', sa.Integer(), nullable=False),
         sa.Column('address', sa.String(length=50), nullable=False),
-        sa.Column('subject_id', sa.Integer(), sa.ForeignKey('subject.id'), nullable=True),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('document')
     )
@@ -33,8 +32,8 @@ def upgrade():
     op.bulk_insert(
         'student',
         [
-            {'name': 'John Doe', 'document': 123456789, 'address': '123 Main St', 'subject_id': None},
-            {'name': 'Jane Smith', 'document': 987654321, 'address': '456 Elm St', 'subject_id': None}
+            {'name': 'John Doe', 'document': 123456789, 'address': '123 Main St'},
+            {'name': 'Jane Smith', 'document': 987654321, 'address': '456 Elm St'}
             # Add more data as needed
         ]
     )

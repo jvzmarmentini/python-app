@@ -5,7 +5,6 @@ class Subject(db.Model):
     id         = db.Column(db.Integer, nullable=False)
     name       = db.Column(db.String(50), nullable=False)
     schedule   = db.Column(db.String(10), nullable=False)
-    students   = db.relationship('Student', backref='subject', lazy=True)
 
     def __repr__(self):
         return f"Subject(name='{self.name}')"
