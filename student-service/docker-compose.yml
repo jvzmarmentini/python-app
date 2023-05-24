@@ -10,7 +10,7 @@ services:
       student-db:
         condition: service_healthy
     networks:
-      - app-network
+      - student-network
     healthcheck:
       test: "curl --fail http://localhost/health || exit 1"
       interval: 10s
@@ -28,7 +28,7 @@ services:
     volumes:
       - student-db:/var/lib/postgresql/data
     networks:
-      - app-network
+      - student-network
     healthcheck:
       test: "pg_isready -U admin -h localhost -d students"
       interval: 10s
@@ -39,4 +39,4 @@ volumes:
   student-db:
 
 networks:
-  app-network:
+  student-network:
