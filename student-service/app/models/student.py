@@ -1,7 +1,7 @@
 from db.config import db
 
 class Student(db.Model):
-    id         = db.Column(db.Integer, primary_key=True)
+    id         = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name       = db.Column(db.String(50), nullable=False)
     document   = db.Column(db.Integer, nullable=False, unique=True)
     address    = db.Column(db.String(50), nullable=False)

@@ -12,7 +12,10 @@ class StudentRepository:
     
     def get_student(self, id):
         return Student.query.get(id)
-    
+
+    def get_student_by_doc(self, document):
+        return Student.query.filter_by(document=document).first() 
+      
     def create_student(self, name, document, address):
         student = Student(name=name, document=document, address=address)
 
