@@ -27,7 +27,7 @@ def register():
 @user_controller.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    email = data.get('email')
+    email = data.get('name')
     password = data.get('password')
 
     session_token = auth_service.login(email, password)
