@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  subject-service:
+    build: .
+    command: bash -c "python main.py"
+    ports:
+      - "82:80"
+    depends_on:
+      subject-db:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: "curl --fail http://localhost/health || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  subject-db:
+    image: postgres:13.4
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: subjects
+    volumes:
+      - subject-db:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: "pg_isready -U admin -h localhost -d subjects"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  subject-db:
+
+networks:
+  app-network:
