@@ -9,6 +9,33 @@ auth_service = AuthService()
 
 @user_controller.route('/register', methods=['POST'])
 def register():
+    """
+    Register a new user.
+    ---
+    tags:
+      - User
+    parameters:
+      - name: email
+        in: body
+        description: User's email
+        required: true
+        type: string
+      - name: password
+        in: body
+        description: User's password
+        required: true
+        type: string
+      - name: name
+        in: body
+        description: User's name
+        required: true
+        type: string
+    responses:
+      201:
+        description: User registered successfully.
+      400:
+        description: Email already taken.
+    """    
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
@@ -26,6 +53,28 @@ def register():
 
 @user_controller.route('/login', methods=['POST'])
 def login():
+    """
+    Log in a user.
+    ---
+    tags:
+      - User
+    parameters:
+      - name: email
+        in: body
+        description: User's email
+        required: true
+        type: string
+      - name: password
+        in: body
+        description: User's password
+        required: true
+        type: string
+    responses:
+      201:
+        description: User logged in successfully.
+      401:
+        description: Invalid email or password.
+    """
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
@@ -40,4 +89,21 @@ def login():
 @user_controller.route('/logout')
 @login_required
 def logout():
+    """
+    Log out a user.
+    ---
+    tags:
+      - User
+    parameters:
+      - name: auth
+        in: header
+        description: an authorization header
+        required: true
+        type: string
+    responses:
+      200:
+        description: User logged out successfully.
+      401:
+        description: Unauthorized - session token required.
+    """
     auth_service.logout(request.headers.get('session-token'))
