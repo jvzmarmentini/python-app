@@ -3,6 +3,8 @@ blinker
 click
 Flask
 Flask-SQLAlchemy
+flask-swagger
+flasgger
 greenlet
 h11
 h2
