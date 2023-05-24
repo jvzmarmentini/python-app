@@ -1,13 +1,14 @@
 version: '3'
 
 services:
-  student-service:
+  service:
+    container_name: "student-app"
     build: .
     command: bash -c "python main.py"
     ports:
       - "81:80"
     depends_on:
-      student-db:
+      db:
         condition: service_healthy
     networks:
       - app-network
@@ -17,7 +18,8 @@ services:
       timeout: 5s
       retries: 3
 
-  student-db:
+  db:
+    container_name: "student-db"
     image: postgres:13.4
     ports:
       - "5432:5432"

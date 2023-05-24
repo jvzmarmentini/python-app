@@ -15,13 +15,13 @@ def enroll_student_in_class():
     if not student_id or not subject_id:
         return jsonify({'error': 'Missing data. Please provide subjectNum, classNum, studentId.'}), 400
     
-    student_response = requests.get(f'localhost:81/{student_id}')
+    student_response = requests.get(f'http://student-app:81/{student_id}')
     if student_response.status_code != 200:
         return jsonify({'error': 'Failed to retrieve student information.'}), 500
     
     print(f"{student_response.status_code=}")
     
-    subject_response = requests.get(f'localhost:82/{subject_id}')
+    subject_response = requests.get(f'http://subject-app:82/{subject_id}')
     if subject_response.status_code != 200:
         return jsonify({'error': 'Failed to retrieve subject information.'}), 500
 

@@ -5,5 +5,5 @@ db = SQLAlchemy()
 def init_app(app):
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://admin:admin@subject-db/subjects'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-    app.config['SQLALCHEMY_ECHO'] = True
+    app.config['SQLALCHEMY_ECHO'] = False
     db.init_app(app)
