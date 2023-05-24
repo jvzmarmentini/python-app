@@ -1,6 +1,8 @@
 from uuid import uuid4
 from modules.auth.user import User
+from modules.auth.user_repository import UserRepository
 
+user_repo = UserRepository()
 session_store_global = {}
 
 class AuthService:
@@ -9,7 +11,8 @@ class AuthService:
         self.sessionStore = session_store_global
 
     def login(self, email, password):
-        user = User.query.filter_by(email=email).first()
+        user = user_repo.get_user_by_email(email)
+        print(user)
 
         if user and user.password == password:
             return self.create_token(user.id)

@@ -22,7 +22,7 @@ def get_student(id):
 
     if student:
         student_data = {'id': student.id, 'name': student.name, 'document': student.document, 'address': student.address}
-        return jsonify(student_data)
+        return jsonify(student_data), 200
     else:
         return jsonify({'error': 'Student not found'}), 404
 
@@ -59,7 +59,7 @@ def update_student(id):
 
     student = student_repo.update_student(student, name, document, address)
 
-    return jsonify({'id': student.id, 'name': student.name, 'document': student.document, 'address': student.address})
+    return jsonify({'id': student.id, 'name': student.name, 'document': student.document, 'address': student.address}), 200
 
 @student_controller.route('/students/<int:id>', methods=['DELETE'])
 @login_required
@@ -68,6 +68,6 @@ def delete_student(id):
 
     if student:
         student_repo.delete_student(student)
-        return jsonify({'message': 'Student deleted'})
+        return jsonify({'message': 'Student deleted'}), 200
     else:
         return jsonify({'error': 'Student not found'}), 404
