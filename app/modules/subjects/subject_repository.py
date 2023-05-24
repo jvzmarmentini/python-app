@@ -1,8 +1,21 @@
-from modules.subjects.subject import Subject
 from config import db
+from modules.subjects.subject import Subject
 
 class SubjectRepository:
+    def get_subject(self, subject_id):
+        return Subject.query.get(subject_id)
 
-    def find_by_subject_and_class_nums(self, subject_num, class_num):
-        subject = Subject.query.filter(Subject.class_num == class_num, Subject.subject_num == subject_num).first()
+    def create_subject(self, class_num, id, name, schedule):
+        subject = Subject(class_num=class_num, id=id, name=name, schedule=schedule)
+        db.session.add(subject)
+        db.session.commit()
         return subject
+
+    def update_subject(self, subject, name, schedule):
+        subject.name = name
+        subject.schedule = schedule
+        db.session.commit()
+
+    def delete_subject(self, subject):
+        db.session.delete(subject)
+        db.session.commit()
