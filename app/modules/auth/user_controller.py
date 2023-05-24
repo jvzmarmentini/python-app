@@ -1,10 +1,11 @@
-from flask import Blueprint, jsonify, redirect, request, url_for
-from modules.auth.user import User
+from flask import Blueprint, jsonify, request
 from modules.auth.auth_service import AuthService
 from config import db
 from modules.common.login_required_decorator import login_required
+from modules.auth.user_repository import UserRepository
 
 user_controller = Blueprint('user_controller', __name__)
+user_repo = UserRepository()
 auth_service = AuthService()
 
 @user_controller.route('/register', methods=['POST'])
@@ -41,15 +42,12 @@ def register():
     password = data.get('password')
     name = data.get('name')
 
-    if User.query.filter_by(email=email).first() is not None:
+    if user_repo.get_user_by_email(email) is not None:
         return "Email already taken"
 
-    user = User(email=email, password=password, name=name)
+    user_repo.create_user(email=email, password=password, name=name)
 
-    db.session.add(user)
-    db.session.commit()
-
-    return '', 201
+    return 'Register success', 201
 
 @user_controller.route('/login', methods=['POST'])
 def login():
@@ -84,9 +82,9 @@ def login():
     if session_token is None:
         return 'Invalid email or password.', 401
     
-    return jsonify({ 'sessionToken': session_token }), 201
+    return jsonify({ 'sessionToken': session_token }), 200
 
-@user_controller.route('/logout')
+@user_controller.route('/logout', methods=['POST'])
 @login_required
 def logout():
     """
@@ -107,3 +105,5 @@ def logout():
         description: Unauthorized - session token required.
     """
     auth_service.logout(request.headers.get('session-token'))
+    
+    return 'Logout success', 200

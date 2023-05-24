@@ -2,10 +2,11 @@ from modules.enrollments.enrollment import Enrollment
 from config import db
 from modules.students.student import Student
 from modules.subjects.subject import Subject
-# from modules.auth.user import User
+from modules.auth.user import User
 
 def populate_database():
-    # admin = 
+    # Admin user
+    admin = User(id=1, email="admin@admin.com", name="admin", password="admin")
 
     # Create subjects
     math = Subject(id=1, name='Math', schedule='A', class_num=1, subject_num=1)
@@ -20,7 +21,7 @@ def populate_database():
     john_in_math = Enrollment(student_id=1, subject_num=1, class_num=1)
 
     # Add subjects and students to the session
-    db.session.add_all([math, science, history, john, jane, mike, john_in_math])
+    db.session.add_all([math, science, history, john, jane, mike, john_in_math, admin])
 
     # Commit the session to persist the changes
     db.session.commit()

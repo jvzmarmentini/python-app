@@ -1,9 +1,9 @@
 from flask import Blueprint, jsonify, request
-from config import db
-from modules.students.student import Student
+from modules.students.student_repository import StudentRepository
 from modules.common.login_required_decorator import login_required
 
 student_controller = Blueprint('student_controller', __name__)
+student_repo = StudentRepository()
 
 @student_controller.route('/students', methods=['GET'])
 @login_required
@@ -30,13 +30,11 @@ def get_students():
     """
     name_query = request.args.get('name')
 
-    if name_query:
-        students = Student.query.filter(Student.name.ilike(f'%{name_query}%')).all()
-    else:
-        students = Student.query.all()
+    students = student_repo.get_students(name_query)
+    student_data = [{'id': s.id, 'name': s.name, 'document': s.document, 'address': s.address} for s in students]
     
-    return jsonify([{'id': s.id, 'name': s.name, 'document': s.document, 'address': s.address} for s in students])
-  
+    return jsonify(student_data)
+
 @student_controller.route('/students/<int:id>', methods=['GET'])
 @login_required
 def get_student(id):
@@ -62,11 +60,12 @@ def get_student(id):
       404:
         description: Student not found.
     """
-    if id:
-        s = Student.query.get(id)
-        if s:
-            return jsonify({'id': s.id, 'name': s.name, 'document': s.document, 'address': s.address})
+    student = student_repo.get_student(id)
 
+    if student:
+        student_data = {'id': student.id, 'name': student.name, 'document': student.document, 'address': student.address}
+        return jsonify(student_data), 200
+    else:
         return jsonify({'error': 'Student not found'}), 404
 
 @student_controller.route('/students', methods=['POST'])
@@ -110,12 +109,9 @@ def create_student():
     address = data.get('address')
 
     if not name or not document or not address:
-        return jsonify({'error': 'Missing data. Please provide name, document and address.'}), 400
+        return jsonify({'error': 'Missing data. Please provide name, document, and address.'}), 400
 
-    student = Student(name=name, document=document, address=address)
-
-    db.session.add(student)
-    db.session.commit()
+    student = student_repo.create_student(name, document, address)
 
     return jsonify({'id': student.id, 'name': student.name}), 201
 
@@ -169,18 +165,14 @@ def update_student(id):
     if not name or not document or not address:
         return jsonify({'error': 'Missing data. Please provide name, document, and address.'}), 400
 
-    student = Student.query.get(id)
+    student = student_repo.get_student(id)
 
     if not student:
         return jsonify({'error': 'Student not found'}), 404
 
-    student.name = name
-    student.document = document
-    student.address = address
+    student = student_repo.update_student(student, name, document, address)
 
-    db.session.commit()
-
-    return jsonify({'id': student.id, 'name': student.name, 'document': student.document, 'address': student.address})
+    return jsonify({'id': student.id, 'name': student.name, 'document': student.document, 'address': student.address}), 200
 
 @student_controller.route('/students/<int:id>', methods=['DELETE'])
 @login_required
@@ -205,7 +197,10 @@ def delete_student(id):
       200:
         description: Student deleted successfully.
     """
-    student = Student.query.get(id)
-    db.session.delete(student)
-    db.session.commit()
-    return jsonify({'message': 'Student deleted'})
+    student = student_repo.get_student(id)
+
+    if student:
+        student_repo.delete_student(student)
+        return jsonify({'message': 'Student deleted'}), 200
+    else:
+        return jsonify({'error': 'Student not found'}), 404
