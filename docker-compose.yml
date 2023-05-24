@@ -7,9 +7,16 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - app-network
+    healthcheck:
+      test: "curl --fail http://localhost/health || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
   db:
     image: postgres:13.4
     ports:
@@ -22,6 +29,11 @@ services:
       - db:/var/lib/postgresql/data
     networks:
       - app-network
+    healthcheck:
+      test: "pg_isready -U admin -h localhost -d college"
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 
 volumes:
