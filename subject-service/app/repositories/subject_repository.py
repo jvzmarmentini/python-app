@@ -12,6 +12,9 @@ class SubjectRepository:
     
     def get_subject(self, subject_id):
         return Subject.query.get(subject_id)
+    
+    def get_subject_by_uniques(self, subject_num, class_num):
+        return Subject.query.filter_by(subject_num=subject_num, class_num=class_num).first()
 
     def create_subject(self, class_num, subject_num, name, schedule):
         subject = Subject(class_num=class_num, subject_num=subject_num, name=name, schedule=schedule)

@@ -12,15 +12,17 @@ def get_subjects():
     
     return jsonify([{'id': s.id, 'class_num': s.class_num, 'subject_num': s.subject_num, 'name': s.name, 'schedule': s.schedule} for s in subjects]), 200
 
-@subject_controller.route('/<int:id>', methods=['GET'])
-def get_subject(id):
-    subject = subject_repo.get_subject(id)
+@subject_controller.route('/<int:subject_num>&<int:class_num>', methods=['GET'])
+def get_subject(subject_num, class_num):
+    if subject_num is None or class_num is None:
+        return jsonify({'error': 'Invalid parameters. Please provide subject_num and class_num.'}), 400
 
-    if subject:
-        subject_data = {'id': subject.id, 'class_num': subject.class_num, 'subject_num': subject.subject_num, 'name': subject.name, 'schedule': subject.schedule}
-        return jsonify(subject_data), 200
-    else:
-        return jsonify({'error': 'Student not found'}), 404
+    subject = subject_repo.get_subject_by_uniques(subject_num, class_num)
+
+    if subject is None:
+        return jsonify({'error': 'Subject not found.'}), 404
+
+    return jsonify({'id': subject.id, 'class_num': subject.class_num, 'subject_num': subject.subject_num, 'name': subject.name, 'schedule': subject.schedule}), 200
 
 @subject_controller.route('/', methods=['POST'])
 def create_subject():
