@@ -1,10 +1,9 @@
 from db.config import db
 
 class Enrollment(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    subject_num = db.Column(db.Integer, nullable=False)
-    class_num = db.Column(db.Integer, nullable=False)
-    student_id = db.Column(db.Integer, nullable=False)
+    subject_num = db.Column(db.Integer, nullable=False, primary_key=True)
+    class_num = db.Column(db.Integer, nullable=False, primary_key=True)
+    student_id = db.Column(db.Integer, nullable=False, primary_key=True)
 
     def __repr__(self):
-        return f"Enrollment(subject_num='{self.subject_num}',class_num='{self.class_num}',student='{self.student_id}')"
+        return f"Enrollment(subject_num={self.subject_num}, class_num={self.class_num}, student_id={self.student_id})"

@@ -1,22 +1,33 @@
+import requests
 from db.config import db
+from flask import jsonify
 from models.enrollment import Enrollment
+from sqlalchemy import func
 
 
 class EnrollmentService:
     def enroll_student_in_class(self, student_id, subject_num, class_num):
-        subject = self.subject_repository.find_by_subject_and_class_nums(subject_num, class_num)
-        student = self.student_repository.find_by_id(student_id)
-
-        if subject is None:
-            raise Exception(f'No subject with subject_num={subject_num} and class_num={class_num}')
+        student_response = requests.get(f'http://student-app:80/{student_id}')
+        if student_response.status_code != 200:
+            return jsonify({'error': 'Failed to retrieve student information.'}), 500
         
-        if student is None:
-            raise Exception(f'No student with id={student_id}')
-
+        subject_response = requests.get(f'http://subject-app:80/{subject_num}&{class_num}')
+        if subject_response.status_code != 200:
+            return jsonify({'error': 'Failed to retrieve subject information.'}), 500
+    
         enrollment = Enrollment(subject_num=subject_num, class_num=class_num, student_id=student_id)
 
         db.session.add(enrollment)
         db.session.commit()
 
     def list_enrollments(self):
-        return Enrollment.query.all()
+        return db.session.query(
+                Enrollment.class_num,
+                Enrollment.subject_num,
+                func.array_agg(Enrollment.student_id).label('student_ids')
+            ).group_by(
+                Enrollment.class_num,
+                Enrollment.subject_num
+            ).all()
+                
+    
