@@ -10,7 +10,7 @@ services:
       subject-db:
         condition: service_healthy
     networks:
-      - subject-network
+      - app-network
     healthcheck:
       test: "curl --fail http://localhost/health || exit 1"
       interval: 10s
@@ -28,7 +28,7 @@ services:
     volumes:
       - subject-db:/var/lib/postgresql/data
     networks:
-      - subject-network
+      - app-network
     healthcheck:
       test: "pg_isready -U admin -h localhost -d subjects"
       interval: 10s
@@ -39,4 +39,4 @@ volumes:
   subject-db:
 
 networks:
-  subject-network:
+  app-network:

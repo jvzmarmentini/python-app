@@ -1,13 +1,13 @@
 version: '3'
 
 services:
-  student-service:
+  enrollment-service:
     build: .
     command: bash -c "python main.py"
     ports:
-      - "81:80"
+      - "83:80"
     depends_on:
-      student-db:
+      enrollment-db:
         condition: service_healthy
     networks:
       - app-network
@@ -17,26 +17,26 @@ services:
       timeout: 5s
       retries: 3
 
-  student-db:
+  enrollment-db:
     image: postgres:13.4
     ports:
-      - "5432:5432"
+      - "5434:5432"
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
-      POSTGRES_DB: students
+      POSTGRES_DB: enrollments
     volumes:
-      - student-db:/var/lib/postgresql/data
+      - enrollment-db:/var/lib/postgresql/data
     networks:
       - app-network
     healthcheck:
-      test: "pg_isready -U admin -h localhost -d students"
+      test: "pg_isready -U admin -h localhost -d enrollments"
       interval: 10s
       timeout: 5s
       retries: 3
 
 volumes:
-  student-db:
+  enrollment-db:
 
 networks:
   app-network:
