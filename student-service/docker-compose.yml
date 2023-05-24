@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  student-service:
+    build: .
+    command: bash -c "python main.py"
+    ports:
+      - "81:80"
+    depends_on:
+      student-db:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: "curl --fail http://localhost/health || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  student-db:
+    image: postgres:13.4
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: students
+    volumes:
+      - student-db:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: "pg_isready -U admin -h localhost -d students"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  student-db:
+
+networks:
+  app-network:
