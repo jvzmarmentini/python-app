@@ -1,10 +1,12 @@
 from flask import Blueprint, jsonify, request
 from repositories.student_repository import StudentRepository
+from login_required_decorator import login_required
 
 student_controller = Blueprint('student_controller', __name__)
 student_repo = StudentRepository()
 
 @student_controller.route('/', methods=['GET'])
+@login_required
 def get_students():
     name_query = request.args.get('name')
 
@@ -14,6 +16,7 @@ def get_students():
     return jsonify(student_data)
 
 @student_controller.route('/<int:id>', methods=['GET'])
+@login_required
 def get_student(id):
     student = student_repo.get_student(id)
 
@@ -24,6 +27,7 @@ def get_student(id):
         return jsonify({'error': 'Student not found'}), 404
 
 @student_controller.route('/', methods=['POST'])
+@login_required
 def create_student():
     data = request.get_json()
     name = data.get('name')
@@ -41,6 +45,7 @@ def create_student():
     return jsonify({'id': student.id, 'name': student.name}), 201
 
 @student_controller.route('/<int:id>', methods=['PUT'])
+@login_required
 def update_student(id):
     data = request.get_json()
     name = data.get('name')
@@ -60,6 +65,7 @@ def update_student(id):
     return jsonify({'id': student.id, 'name': student.name, 'document': student.document, 'address': student.address}), 200
 
 @student_controller.route('/<int:id>', methods=['DELETE'])
+@login_required
 def delete_student(id):
     student = student_repo.get_student(id)
 

@@ -1,10 +1,12 @@
 from flask import Blueprint, jsonify, request
 from repositories.enrollment_service import EnrollmentService
+from login_required_decorator import login_required
 
 enrollment_controller = Blueprint('enrollment_controller', __name__)
 enrollment_service = EnrollmentService()
 
 @enrollment_controller.route('/', methods=['POST'])
+@login_required
 def enroll_student_in_class():
     data = request.get_json()
     
@@ -20,6 +22,7 @@ def enroll_student_in_class():
     return 'Enroll success', 201
 
 @enrollment_controller.route('/', methods=['GET'])
+@login_required
 def list_enrollments():
     enrollments = enrollment_service.list_enrollments()
 

@@ -40,3 +40,10 @@ def logout():
     auth_service.logout(request.headers.get('session-token'))
     
     return 'Logout success', 200
+
+@auth_controller.route('/session', methods=['POST'])
+def isSessionValid():
+    data = request.get_json()
+    session_token = data.get('sessionToken')
+    valid = auth_service.is_session_valid(session_token)
+    return jsonify({ 'valid': valid }), 200
