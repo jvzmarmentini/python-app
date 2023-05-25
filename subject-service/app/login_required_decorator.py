@@ -9,7 +9,7 @@ def login_required(func):
         data = { 'sessionToken': session_token }
         response = requests.post('http://auth-app/session', json=data)
         
-        if response.json().valid:
+        if response.json().get('valid') is True:
             return func(*args, **kwargs)
         else:
             return 'Unauthorized', 401
