@@ -2,6 +2,11 @@
 
 This repository contains the code for a microservices-based application implemented. This application create and manage students and subjects.
 
+## Contributors
+- Lucas Antunes
+- Gabriel Panho
+- João Marmetini
+
 ## Installation
 
 1. Clone the repository;
