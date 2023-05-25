@@ -90,9 +90,9 @@ curl -X GET -H "session-token: $SESSION_TOKEN" http://localhost:5001/{id}
 
 ```bash
 curl -X POST -H "session-token: $SESSION_TOKEN" -H "Content-Type: application/json" -d '{
-    "class_num" : 4
-    "subject_num" : 4
-    "name" : "Biology"
+    "class_num" : 4,
+    "subject_num" : 4,
+    "name" : "Biology",
     "schedule" : "D"}' http://localhost:5001/
 ```
 
@@ -165,7 +165,7 @@ curl -X POST -H "session-token: $SESSION_TOKEN" http://localhost:5003/logout
 
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{
-    "sessionToken" : "e63e4b1e-2dc0-4ade-8ae7-8e9f97950db9",
+    "sessionToken" : "e63e4b1e-2dc0-4ade-8ae7-8e9f97950db9"
 }' http://localhost:5003/session
 ```
 
