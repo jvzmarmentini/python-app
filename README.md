@@ -175,51 +175,6 @@ curl -X POST -H "Content-Type: application/json" -H "session-token: $SESSION_TOK
 curl -X GET -H "session-token: $SESSION_TOKEN" http://localhost:5002/
 ```
 
-### Auth Controller
-
-The auth service is mapped on port 5003
-
-- `POST /register`: Register a new user.
-
-```bash
-curl -X POST -H "Content-Type: application/json" -d '{
-    "email" : "johndoe@email.com",
-    "password" : "123",
-    "name" : "John Doe"
-}' http://localhost:5003/register
-```
-
-- `POST /login`: Login and obtain a session token.
-
-```bash
-curl -X POST -H "Content-Type: application/json" -d '{
-    "email" : "johndoe@email.com",
-    "password" : "123"
-}' http://localhost:5003/login
-```
-
-Use the following command to login and set token to `SESSION_TOKEN` env var in a single command.
-```bash
-SESSION_TOKEN=$(curl -X POST -H "Content-Type: application/json" -d '{
-    "email" : "johndoe@email.com",
-    "password" : "123"
-}' http://localhost:5003/login | grep -Po '"sessionToken"\s*:\s*"\K[^"]+')
-```
-
-- `POST /logout`: Logout and invalidate the session token.
-
-```bash
-curl -X POST -H "session-token: $SESSION_TOKEN" http://localhost:5003/logout
-```
-
-- `POST /session`: Check if session token is valid.
-
-```bash
-curl -X POST -H "Content-Type: application/json" -d '{
-    "sessionToken" : "e63e4b1e-2dc0-4ade-8ae7-8e9f97950db9"
-}' http://localhost:5003/session
-```
-
 ## Architecture
 
 The application follows a microservices-based architecture, with separate modules for students, subjects, enrollment and user authentication.
