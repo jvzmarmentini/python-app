@@ -7,7 +7,7 @@ services:
     image: student_app:latest
     command: bash -c "python main.py"
     ports:
-      - "5000:80"
+      - "5001:80"
     depends_on:
       student-db:
         condition: service_healthy
@@ -42,7 +42,7 @@ services:
     image: subject_app:latest
     command: bash -c "python main.py"
     ports:
-      - "5001:80"
+      - "5002:80"
     depends_on:
       subject-db:
         condition: service_healthy
@@ -70,14 +70,14 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-  
+
   enrollment:
     container_name: "enrollment-app"
     build: ./enrollment-service
     image: enrollment_app:latest
     command: bash -c "python main.py"
     ports:
-      - "5002:80"
+      - "5003:80"
     depends_on:
       enrollment-db:
         condition: service_healthy
@@ -112,7 +112,7 @@ services:
     image: auth_app:latest
     command: bash -c "python main.py"
     ports:
-      - "5003:80"
+      - "5004:80"
     depends_on:
       auth-db:
         condition: service_healthy
@@ -146,6 +146,7 @@ volumes:
   subject-db:
   enrollment-db:
   auth-db:
+
 
 networks:
   app-network:
