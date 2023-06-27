@@ -1,5 +1,5 @@
-from db.config import db
-from models.student import Student
+from app.db.config import db
+from app.models.student import Student
 
 def populate_database():
     john = Student(name='John Doe', document=123456, address='123 Street')

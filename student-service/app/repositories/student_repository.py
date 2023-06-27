@@ -1,5 +1,5 @@
-from db.config import db
-from models.student import Student
+from app.db.config import db
+from app.models.student import Student
 
 class StudentRepository:
     def get_students(self, name_query=None):

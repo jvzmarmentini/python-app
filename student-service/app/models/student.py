@@ -1,4 +1,4 @@
-from db.config import db
+from app.db.config import db
 
 class Student(db.Model):
     id         = db.Column(db.Integer, primary_key=True, autoincrement=True)

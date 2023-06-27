@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
-from repositories.student_repository import StudentRepository
-from login_required_decorator import login_required
+from app.repositories.student_repository import StudentRepository
+from app.login_required_decorator import login_required
 
 student_controller = Blueprint('student_controller', __name__)
 student_repo = StudentRepository()
