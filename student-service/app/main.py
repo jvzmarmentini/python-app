@@ -13,7 +13,7 @@ app.register_blueprint(health_controller)
 init_app(app)
 with app.app_context():
     db.create_all()
-    if Student.query.count() == 0: 
+    if Student.query.count() == 0 and not app.config['TESTING']: 
         populate_database()
 
 if __name__ == '__main__':

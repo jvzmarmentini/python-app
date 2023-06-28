@@ -1,58 +1,112 @@
 import pytest
-import json
+from pytest_mock import module_mocker
 from flask import Flask
-from unittest.mock import MagicMock, patch
-from app.repositories.student_repository import StudentRepository
+from app.db.config import db
 from app.controllers.student_controller import student_controller
+from app.controllers.health_controller import health_controller
+from app.models import Student
 
-def mock_login_required(func):
-    def mock_secure_function(*args, **kwargs):
-        return func(*args, **kwargs)
-    return mock_secure_function
-
-@pytest.fixture
-def app():
+@pytest.fixture(scope='module')
+def test_app():
     app = Flask(__name__)
     app.register_blueprint(student_controller)
-    return app
+    app.register_blueprint(health_controller)
+    app.config['TESTING'] = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 
-@pytest.fixture(autouse=True)
-def mock_auth_decorator(monkeypatch):
-    monkeypatch.setattr("app.login_required_decorator.login_required", mock_login_required)
-    
-def test_get_student(app):
-    # Mocking the repository behavior
-    with patch.object(StudentRepository, 'get_student') as mock_get_student:
-        mock_get_student.return_value = MagicMock(id=1, name='John Doe', document=123456789, address='123 Main St')
+    db.init_app(app)
 
-        # Making the request to the endpoint
-        response = app.test_client().get('/1')
+    with app.app_context():
+        db.create_all()
 
-        # Asserting the response status code and data
-        assert response.status_code == 200
-        assert response.json == {'id': 1, 'name': 'John Doe', 'document': 123456789, 'address': '123 Main St'}
+        yield app
+        db.session.remove()
+        db.drop_all()
 
 
-# def test_get_student(client, student_repo):
-#     # Create a test student
-#     student = student_repo.create_student('John Doe', '12345', '123 Street')
+@pytest.fixture(scope='module')
+def mocked_db(test_app):
 
-#     response = client.get(f'/{student.id}')
+    with test_app.app_context():
+        john = Student(name='John Doe', document=123456, address='123 Street')
+        jane = Student(name='Jane Smith', document=789012, address='456 Avenue')
+        mike = Student(name='Mike Johnson', document=345678, address='789 Road')
+        db.session.add_all([john, jane, mike])
+        db.session.commit()
 
-#     # Assert the response
-#     assert response.status_code == 200
-#     assert response.json == {
-#         'id': student.id,
-#         'name': 'John Doe',
-#         'document': '12345',
-#         'address': '123 Street'
-#     }
+    yield db  # Retorna o banco de dados para que os testes possam ser executados
 
-# def test_get_student_not_found(client):
-#     response = client.get('/123')
+    with test_app.app_context():
+        db.session.remove()
+        db.drop_all()
 
-#     # Assert the response
-#     assert response.status_code == 404
-#     assert response.json == {'error': 'Student not found'}
 
-# Add more test functions for other routes and scenarios
+@pytest.fixture(scope='module')
+def test_client(test_app, mocked_db):
+    return test_app.test_client()
+
+
+@pytest.fixture(scope='module')
+def mocked_auth_service(module_mocker):
+    module_mocker.patch('app.login_required_decorator.requests.post').return_value.json.return_value = {'valid': True}
+    # module_mocker.patch.object('app.login_required_decorator','requests.post', {'valid': True})
+
+
+def test_get_students(test_client, mocked_auth_service):
+    response = test_client.get('/')
+    assert response.status_code == 200
+
+    data = response.get_json()
+    print(data)
+    # Verifica se retornou a quantidade correta de alunos
+    assert len(data) == 3
+
+
+def test_get_student(test_client, mocked_auth_service):
+    response = test_client.get('/1')
+    assert response.status_code == 200
+
+    data = response.get_json()
+    assert data['name'] == 'John Doe'
+
+
+def test_create_student(test_client, mocked_auth_service):
+    new_student = {
+        'name': 'Alice Johnson',
+        'document': 999999,
+        'address': '789 Oak St'
+    }
+
+    response = test_client.post('/', json=new_student)
+    assert response.status_code == 201
+
+    data = response.get_json()
+    assert data['name'] == 'Alice Johnson'
+    assert 'id' in data
+
+
+def test_update_student(test_client, mocked_auth_service):
+    updated_student = {
+        'name': 'John Doe',
+        'document': 123456,
+        'address': '321 Elm St'
+    }
+
+    response = test_client.put('/1', json=updated_student)
+    assert response.status_code == 200
+
+    data = response.get_json()
+    assert data['address'] == '321 Elm St'
+
+
+def test_delete_student(test_client, mocked_auth_service):
+    response = test_client.delete('/2')
+    assert response.status_code == 200
+
+    data = response.get_json()
+    assert data['message'] == 'Student deleted'
+
+
+def test_health_student(test_client):
+    response = test_client.get('/health')
+    assert response.status_code == 200
