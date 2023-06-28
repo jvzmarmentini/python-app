@@ -7,15 +7,9 @@ class StudentRepository:
             students = Student.query.filter(Student.name.ilike(f'%{name_query}%')).all()
         else:
             students = Student.query.all()
-            
-        print(students, flush=True)
         
-        students_json = [{'id': s.id, 'name': s.name,
-                     'document': s.document, 'address': s.address} for s in students]
+        return [{'id': s.id, 'name': s.name, 'document': s.document, 'address': s.address} for s in students]
         
-        print(students_json, flush=True)
-        
-        return students_json
     
     def get_student(self, id):
         return Student.query.get(id)

@@ -9,3 +9,11 @@ class Student(db.Model):
 
     def __repr__(self):
         return f"Student({self.id=}, {self.name=}, {self.document=}, {self.address=})"
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'document': self.document,
+            'address': self.address
+        }

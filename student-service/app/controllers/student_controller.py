@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
-from app.repositories.student_repository import StudentRepository
+
 from app.login_required_decorator import login_required
+from app.repositories.student_repository import StudentRepository
 
 student_controller = Blueprint('student_controller', __name__)
 student_repo = StudentRepository()
@@ -12,7 +13,6 @@ def get_students():
     name_query = request.args.get('name')
 
     students = student_repo.get_students(name_query)
-    print(students, flush=True)
 
     return jsonify(students)
 
