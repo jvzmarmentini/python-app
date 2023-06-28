@@ -13,12 +13,14 @@ def app():
 
 
 @pytest.fixture(scope='module')
-def mocked_auth_service(module_mocker):
-    module_mocker.patch(
-        'app.login_required_decorator.requests.post').return_value.json.return_value = {'valid': True}
+def mocked_authenticate():
+    with patch('app.login_required_decorator.authenticate') as mock:
+        mock.return_value = True
+        yield mock
 
 
-def test_get_students(app, mocked_auth_service):
+def test_get_students(app, mocked_authenticate):
+
     with app.test_request_context('/'):
         with patch.object(StudentRepository, 'get_students') as mock_get_students:
             mock_get_students.return_value = [
