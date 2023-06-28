@@ -1,4 +1,4 @@
-from models.enrollment import Enrollment
+from app.models.enrollment import Enrollment
 
 __all__ = [
     'Enrollment',

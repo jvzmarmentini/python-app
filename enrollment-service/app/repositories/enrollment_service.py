@@ -1,7 +1,7 @@
 import requests
-from db.config import db
+from app.db.config import db
 from flask import jsonify
-from models.enrollment import Enrollment
+from app.models.enrollment import Enrollment
 from sqlalchemy import func
 
 

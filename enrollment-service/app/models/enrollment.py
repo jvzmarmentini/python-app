@@ -1,4 +1,4 @@
-from db.config import db
+from app.db.config import db
 
 class Enrollment(db.Model):
     subject_num = db.Column(db.Integer, nullable=False, primary_key=True)

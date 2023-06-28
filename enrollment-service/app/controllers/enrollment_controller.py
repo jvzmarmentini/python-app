@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from repositories.enrollment_service import EnrollmentService
+from app.repositories.enrollment_service import EnrollmentService
 from login_required_decorator import login_required
 
 enrollment_controller = Blueprint('enrollment_controller', __name__)

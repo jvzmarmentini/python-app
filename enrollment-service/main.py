@@ -1,7 +1,7 @@
 from flask import Flask
-from controllers.enrollment_controller import enrollment_controller
-from controllers.health_controller import health_controller
-from db.config import db, init_app
+from app.controllers.enrollment_controller import enrollment_controller
+from app.controllers.health_controller import health_controller
+from app.db.config import db, init_app
 # from db.populate import populate_database
 # from models.enrollment import Enrollment
 
