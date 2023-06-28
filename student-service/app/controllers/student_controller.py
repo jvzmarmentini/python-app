@@ -13,8 +13,9 @@ def get_students():
     name_query = request.args.get('name')
 
     students = student_repo.get_students(name_query)
+    student_data = [s.to_dict() for s in students]
 
-    return jsonify(students)
+    return jsonify(student_data)
 
 
 @student_controller.route('/<int:id>', methods=['GET'])

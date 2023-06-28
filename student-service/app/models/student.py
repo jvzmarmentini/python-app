@@ -17,3 +17,11 @@ class Student(db.Model):
             'document': self.document,
             'address': self.address
         }
+    
+    def from_dict(data):
+        student = Student()
+        for field in data:
+            if field in data:
+                setattr(student, field, data[field])
+
+        return student
