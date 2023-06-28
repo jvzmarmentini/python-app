@@ -5,15 +5,17 @@ from app.login_required_decorator import login_required
 student_controller = Blueprint('student_controller', __name__)
 student_repo = StudentRepository()
 
+
 @student_controller.route('/', methods=['GET'])
 @login_required
 def get_students():
     name_query = request.args.get('name')
 
     students = student_repo.get_students(name_query)
-    student_data = [{'id': s.id, 'name': s.name, 'document': s.document, 'address': s.address} for s in students]
-    
-    return jsonify(student_data)
+    print(students, flush=True)
+
+    return jsonify(students)
+
 
 @student_controller.route('/<int:id>', methods=['GET'])
 @login_required
@@ -21,10 +23,12 @@ def get_student(id):
     student = student_repo.get_student(id)
 
     if student:
-        student_data = {'id': student.id, 'name': student.name, 'document': student.document, 'address': student.address}
+        student_data = {'id': student.id, 'name': student.name,
+                        'document': student.document, 'address': student.address}
         return jsonify(student_data), 200
     else:
         return jsonify({'error': 'Student not found'}), 404
+
 
 @student_controller.route('/', methods=['POST'])
 @login_required
@@ -43,6 +47,7 @@ def create_student():
     student = student_repo.create_student(name, document, address)
 
     return jsonify({'id': student.id, 'name': student.name}), 201
+
 
 @student_controller.route('/<int:id>', methods=['PUT'])
 @login_required
@@ -63,6 +68,7 @@ def update_student(id):
     student = student_repo.update_student(student, name, document, address)
 
     return jsonify({'id': student.id, 'name': student.name, 'document': student.document, 'address': student.address}), 200
+
 
 @student_controller.route('/<int:id>', methods=['DELETE'])
 @login_required

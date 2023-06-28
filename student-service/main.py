@@ -1,9 +1,9 @@
 from flask import Flask
-from controllers.student_controller import student_controller
-from controllers.health_controller import health_controller
-from db.config import db, init_app
-from db.populate import populate_database
-from models.student import Student
+from app.controllers.student_controller import student_controller
+from app.controllers.health_controller import health_controller
+from app.db.config import db, init_app
+from app.db.populate import populate_database
+from app.models.student import Student
 
 app = Flask(__name__)
 
