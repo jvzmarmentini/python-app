@@ -3,3 +3,5 @@ flask_login
 Flask-SQLAlchemy
 SQLAlchemy
 psycopg2
+pytest
+pytest_mock
