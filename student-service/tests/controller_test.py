@@ -125,16 +125,72 @@ def test_create_duplicated_student(app):
             assert response.status_code == 400
 
 def test_update_student(app):
-    pass
+    with app.test_request_context('/'):
+        with patch.object(StudentRepository, 'get_student') as mock_get_student:
+            with patch.object(StudentRepository, 'update_student') as mock_update_student:
+                mock_get_student.return_value = Student(id=1, name='John Doe', document=123456789, address='123 Main St')
+                mock_update_student.side_effect = lambda student, name, document, address: Student(id=student.id, name=name, document=document, address=address)
+
+                student_to_update = {
+                    'name': 'John Doe',
+                    'document': 123456789,
+                    'address': '123 Main St'
+                }
+
+                response = app.test_client().put('/1', json=student_to_update)
+
+                assert response.status_code == 200
+                assert response.json == {
+                    'id': 1,
+                    **student_to_update
+                }
 
 
 def test_update_non_existent_student(app):
-    pass
+    with app.test_request_context('/'):
+        with patch.object(StudentRepository, 'get_student') as mock_get_student:
+                mock_get_student.return_value = None
 
+                student_to_update = {
+                    'name': 'John Doe',
+                    'document': 123456789,
+                    'address': '123 Main St'
+                }
+
+                response = app.test_client().put('/1', json=student_to_update)
+
+                assert response.status_code == 404
+
+
+def test_update_invalid_student(app):
+    with app.test_request_context('/'):
+        student_to_update = {
+            'name': 'John Doe',
+            'document': 123456789,
+            # missing address
+        }
+
+        response = app.test_client().put('/1', json=student_to_update)
+
+        assert response.status_code == 400
 
 def test_delete_student(app):
-    pass
+    with app.test_request_context('/'):
+        with patch.object(StudentRepository, 'get_student') as mock_get_student:
+            with patch.object(StudentRepository, 'delete_student') as mock_delete_student:
+                mock_get_student.return_value = Student(id=1, name='John Doe', document=123456789, address='123 Main St')
+                mock_delete_student.return_value = None
+
+                response = app.test_client().delete('/1')
+
+                assert response.status_code == 200
 
 
 def test_delete_non_existent_student(app):
-    pass
+    with app.test_request_context('/'):
+        with patch.object(StudentRepository, 'get_student') as mock_get_student:
+            mock_get_student.return_value = None
+
+            response = app.test_client().delete('/1')
+
+            assert response.status_code == 404
