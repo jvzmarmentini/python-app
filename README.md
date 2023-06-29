@@ -23,6 +23,18 @@ If Docker is not installed, follow the official Docker installation guide for yo
 
 In this project, we rely on two frameworks: Flask and SQLAlchemy. That's it (:
 
+## Test
+
+To run the tests, simply execute:
+
+```bash
+pytest
+```
+
+It will find all microservices tests. If you need to see a specific one, move to the desired folder and run the same command.
+
+For more verbose, use the `-v` flags
+
 ## Usage
 
 Build and start the application using Docker Compose:
