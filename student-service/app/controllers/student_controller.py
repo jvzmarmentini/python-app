@@ -13,7 +13,7 @@ def get_students():
     name_query = request.args.get('name')
 
     students = student_repo.get_students(name_query)
-    student_data = [s.to_dict() for s in students]
+    student_data = [s for s in students]
 
     return jsonify(student_data)
 
