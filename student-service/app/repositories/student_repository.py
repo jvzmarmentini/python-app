@@ -8,7 +8,7 @@ class StudentRepository:
         else:
             students = Student.query.all()
         
-        return [{'id': s.id, 'name': s.name, 'document': s.document, 'address': s.address} for s in students]
+        return students
         
     
     def get_student(self, id):
