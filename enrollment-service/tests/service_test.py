@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch
-from app.repositories.enrollment_service import EnrollmentService
+from app.enrollment_service import EnrollmentService
 
 
 class MockResponse:
@@ -17,13 +17,6 @@ class MockEnrollment:
         self.subject_num = subject_num
         self.class_num = class_num
         self.student_id = student_id
-
-
-@pytest.fixture(scope='module')
-def mocked_authenticate():
-    with patch('app.login_required_decorator.authenticate') as mock:
-        mock.return_value = True
-        yield mock
 
 
 def test_enroll_student_in_class_success():
@@ -83,21 +76,3 @@ def test_enroll_student_in_class_success():
 #         assert response.status_code == 500
 #         assert response.json_data == {
 #             'error': 'Failed to retrieve subject information.'}
-
-
-# def test_list_enrollments():
-#     service = EnrollmentService()
-
-#     # Mock the enrollments
-#     enrollment1 = MockEnrollment('ENG101', 'A101', 1)
-#     enrollment2 = MockEnrollment('MATH202', 'B202', 2)
-#     enrollment3 = MockEnrollment('SCI303', 'C303', 1)
-#     service.enrollments = [enrollment1, enrollment2, enrollment3]
-
-#     enrollments = service.list_enrollments()
-
-#     # Assert that the enrollments were retrieved correctly
-#     assert len(enrollments) == 3
-#     assert enrollments[0].subject_num == enrollment1.subject_num
-#     assert enrollments[0].class_num == enrollment1.class_num
-#     assert enrollments[0].student_ids == [enrollment1.student_id]
