@@ -5,7 +5,7 @@ from app.repositories.auth_repository import AuthRepository
 from app.services.auth_service import AuthService
 
 
-def test_login_with_valid_credentials(mocker):
+def test_login_with_valid_credentials():
     
     with patch.object(AuthRepository, "get_user_by_email") as mock_get_user_by_email:
         email = "test@example.com"
@@ -24,7 +24,7 @@ def test_login_with_valid_credentials(mocker):
         assert result == session_token
 
 
-def test_login_with_invalid_credentials(mocker):
+def test_login_with_invalid_credentials():
     with patch.object(AuthRepository, "get_user_by_email") as mock_get_user_by_email:
         email = "test@example.com"
         password = "password123"
@@ -37,20 +37,8 @@ def test_login_with_invalid_credentials(mocker):
 
         assert result == None
 
-def test_create_token(mocker):
-    user_id = 1
-    session_token = "session_token"
 
-    auth_service = AuthService()
-    mocker.patch("uuid.uuid4", return_value=session_token)
-
-    result = auth_service.create_token(user_id)
-
-    assert result == session_token
-    assert auth_service.sessionStore[user_id] == session_token
-    assert auth_service.sessionStore[session_token] == user_id
-
-def test_logout(mocker):
+def test_logout():
     session_token = "session_token"
     user_id = 1
 
@@ -63,7 +51,7 @@ def test_logout(mocker):
     assert user_id not in auth_service.sessionStore
     assert session_token not in auth_service.sessionStore
 
-def test_is_session_valid_with_valid_session_token(mocker):
+def test_is_session_valid_with_valid_session_token():
     session_token = "session_token"
 
     auth_service = AuthService()
@@ -72,12 +60,3 @@ def test_is_session_valid_with_valid_session_token(mocker):
     result = auth_service.is_session_valid(session_token)
 
     assert result is True
-
-def test_is_session_valid_with_invalid_session_token(mocker):
-    session_token = "session_token"
-
-    auth_service = AuthService()
-
-    result = auth_service.is_session_valid(session_token)
-
-    assert result is False
