@@ -43,7 +43,7 @@ def create_student():
         return jsonify({'error': 'Missing data. Please provide name, document, and address.'}), 400
 
     if student_repo.get_student_by_doc(document) is not None:
-        return jsonify({'error': 'A student with this document has already been created'})
+        return jsonify({'error': 'A student with this document has already been created'}), 400
 
     student = student_repo.create_student(name, document, address)
 
