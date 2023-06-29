@@ -1,6 +1,7 @@
+from sqlalchemy import func
+
 from app.db.config import db
 from app.models.enrollment import Enrollment
-from sqlalchemy import func
 
 
 class EnrollmentRepository:
