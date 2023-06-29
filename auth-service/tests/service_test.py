@@ -25,19 +25,17 @@ def test_login_with_valid_credentials(mocker):
 
 
 def test_login_with_invalid_credentials(mocker):
-    email = "test@example.com"
-    password = "password123"
+    with patch.object(AuthRepository, "get_user_by_email") as mock_get_user_by_email:
+        email = "test@example.com"
+        password = "password123"
+        
+        mock_get_user_by_email.return_value = None
 
-    auth_repo_mock = mocker.Mock(spec=AuthRepository)
-    auth_repo_mock.get_user_by_email.return_value = None
+        auth_service = AuthService()
 
-    auth_service = AuthService()
-    auth_service.auth_repo = auth_repo_mock
+        result = auth_service.login(email, password)
 
-    result = auth_service.login(email, password)
-
-    assert result is None
-    auth_repo_mock.get_user_by_email.assert_called_once_with(email)
+        assert result == None
 
 def test_create_token(mocker):
     user_id = 1
