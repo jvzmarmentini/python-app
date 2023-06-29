@@ -1,6 +1,6 @@
 from uuid import uuid4
-from models.user import User
-from repositories.auth_repository import AuthRepository
+from app.models.user import User
+from app.repositories.auth_repository import AuthRepository
 
 auth_repo = AuthRepository()
 session_store_global = {}

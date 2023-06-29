@@ -1,6 +1,6 @@
 
 import functools
-from services.auth_service import AuthService
+from app.services.auth_service import AuthService
 from flask import request
 
 

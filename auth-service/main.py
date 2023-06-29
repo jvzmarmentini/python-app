@@ -1,9 +1,9 @@
 from flask import Flask
-from controllers.auth_controller import auth_controller
-from controllers.health_controller import health_controller
-from db.config import db, init_app
-from db.populate import populate_database
-from models.user import User
+from app.controllers.auth_controller import auth_controller
+from app.controllers.health_controller import health_controller
+from app.db.config import db, init_app
+from app.db.populate import populate_database
+from app.models.user import User
 
 app = Flask(__name__)
 

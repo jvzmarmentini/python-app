@@ -1,5 +1,5 @@
-from db.config import db
-from models.user import User
+from app.db.config import db
+from app.models.user import User
 
 def populate_database():
 

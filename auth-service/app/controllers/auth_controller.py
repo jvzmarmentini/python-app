@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
-from services.auth_service import AuthService
-from login_required_decorator import login_required
-from repositories.auth_repository import AuthRepository
+from app.services.auth_service import AuthService
+from app.login_required_decorator import login_required
+from app.repositories.auth_repository import AuthRepository
 
 auth_controller = Blueprint('auth_controller', __name__)
 auth_repo = AuthRepository()
