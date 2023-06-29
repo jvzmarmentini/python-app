@@ -28,7 +28,9 @@ In this project, we rely on two frameworks: Flask and SQLAlchemy. That's it (:
 To run the tests, simply execute:
 
 ```bash
-pytest
+cd auth-service && pytest && cd .. &&\
+cd student-service && pytest && cd .. &&\
+cd enrollment-service && pytest && cd ..
 ```
 
 It will find all microservices tests. If you need to see a specific one, move to the desired folder and run the same command.
