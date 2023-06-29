@@ -1,6 +1,10 @@
+from unittest.mock import patch, call
+
 import pytest
-from unittest.mock import patch
-from app.repositories.enrollment_service import EnrollmentService
+
+from app.enrollment_service import EnrollmentService
+from app.repositories.enrollment_repository import EnrollmentRepository
+from app.models.enrollment import Enrollment
 
 
 class MockResponse:
@@ -12,92 +16,76 @@ class MockResponse:
         return self.json_data
 
 
-class MockEnrollment:
-    def __init__(self, subject_num, class_num, student_id):
-        self.subject_num = subject_num
-        self.class_num = class_num
-        self.student_id = student_id
-
-
-@pytest.fixture(scope='module')
-def mocked_authenticate():
-    with patch('app.login_required_decorator.authenticate') as mock:
-        mock.return_value = True
-        yield mock
-
-
 def test_enroll_student_in_class_success():
-    service = EnrollmentService()
     student_id = 1
-    subject_num = 'ENG101'
-    class_num = 'A101'
+    student_response_data = {'id': student_id, 'name': 'John Doe'}
+    student_response = MockResponse(200, json_data=student_response_data)
+
+    subject_num = 123
+    class_num = 456
+    subject_response_data = {
+        'subject_num': subject_num, 'class_num': class_num}
+    subject_response = MockResponse(200, json_data=subject_response_data)
 
     with patch('requests.get') as mock_get:
-        with patch.object(service, 'enroll_student_in_class') as mock_enroll:
-            mock_get.side_effect = [
-                MockResponse(200, {'student_id': student_id}),
-                MockResponse(
-                    200, {'subject_num': subject_num, 'class_num': class_num})
-            ]
+        mock_get.side_effect = [student_response, subject_response]
 
-            service.enroll_student_in_class(student_id, subject_num, class_num)
+        with patch.object(EnrollmentRepository, 'create_enrollment') as mock_repository:
+            enrollment_fake = Enrollment.from_dict({
+                'subject_num': subject_num,
+                'class_num': class_num,
+                'student_id': student_id
+            })
 
-            mock_enroll.assert_called_once_with(
+            mock_repository.return_value = enrollment_fake
+
+            enrollment = EnrollmentService.enroll_student_in_class(
                 student_id, subject_num, class_num)
 
+    assert enrollment == enrollment_fake
 
-# def test_enroll_student_in_class_failed_to_retrieve_student_info():
-#     service = EnrollmentService()
-#     student_id = 1
-#     subject_num = 'ENG101'
-#     class_num = 'A101'
-
-#     with patch('requests.get') as mock_get:
-#         mock_get.return_value = MockResponse(500)
-
-#         response = service.enroll_student_in_class(
-#             student_id, subject_num, class_num)
-
-#         # Assert that an error message and status code 500 were returned
-#         assert response.status_code == 500
-#         assert response.json_data == {
-#             'error': 'Failed to retrieve student information.'}
+    mock_get.assert_has_calls([
+        call(f'http://student-app:80/{student_id}'),
+        call(f'http://subject-app:80/{subject_num}&{class_num}')
+    ])
 
 
-# def test_enroll_student_in_class_failed_to_retrieve_subject_info():
-#     service = EnrollmentService()
-#     student_id = 1
-#     subject_num = 'ENG101'
-#     class_num = 'A101'
+def test_enroll_student_in_class_retrieve_student_failed():
+    student_id = 1
+    student_response = MockResponse(500)
 
-#     with patch('requests.get') as mock_get:
-#         mock_get.side_effect = [
-#             MockResponse(200, {'student_id': student_id}),
-#             MockResponse(500)
-#         ]
+    subject_num = 123
+    class_num = 456
+    subject_response_data = {
+        'subject_num': subject_num, 'class_num': class_num}
+    subject_response = MockResponse(200, json_data=subject_response_data)
 
-#         response = service.enroll_student_in_class(
-#             student_id, subject_num, class_num)
+    with patch('app.enrollment_service.jsonify', return_value={'error': 'Failed to retrieve student information.'}):
+        with patch('requests.get') as mock_get:
+            mock_get.side_effect = [student_response, subject_response]
 
-#         # Assert that an error message and status code 500 were returned
-#         assert response.status_code == 500
-#         assert response.json_data == {
-#             'error': 'Failed to retrieve subject information.'}
+            result = EnrollmentService.enroll_student_in_class(
+                student_id, subject_num, class_num)
+
+    assert result == (
+        {'error': 'Failed to retrieve student information.'}, 500)
 
 
-# def test_list_enrollments():
-#     service = EnrollmentService()
+def test_enroll_student_in_class_retrieve_subject_failed():
+    student_id = 1
+    student_response_data = {'id': student_id, 'name': 'John Doe'}
+    student_response = MockResponse(200, json_data=student_response_data)
 
-#     # Mock the enrollments
-#     enrollment1 = MockEnrollment('ENG101', 'A101', 1)
-#     enrollment2 = MockEnrollment('MATH202', 'B202', 2)
-#     enrollment3 = MockEnrollment('SCI303', 'C303', 1)
-#     service.enrollments = [enrollment1, enrollment2, enrollment3]
+    subject_num = 123
+    class_num = 456
+    subject_response = MockResponse(500)
 
-#     enrollments = service.list_enrollments()
+    with patch('app.enrollment_service.jsonify', return_value={'error': 'Failed to retrieve student information.'}):
+        with patch('requests.get') as mock_get:
+            mock_get.side_effect = [student_response, subject_response]
 
-#     # Assert that the enrollments were retrieved correctly
-#     assert len(enrollments) == 3
-#     assert enrollments[0].subject_num == enrollment1.subject_num
-#     assert enrollments[0].class_num == enrollment1.class_num
-#     assert enrollments[0].student_ids == [enrollment1.student_id]
+            result = EnrollmentService.enroll_student_in_class(
+                student_id, subject_num, class_num)
+
+    assert result == (
+        {'error': 'Failed to retrieve student information.'}, 500)
