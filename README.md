@@ -25,7 +25,7 @@ In this project, we rely on two frameworks: Flask and SQLAlchemy. That's it (:
 
 ## Test
 
-To run the testes, simply execute:
+To run the tests, simply execute:
 
 ```bash
 pytest
